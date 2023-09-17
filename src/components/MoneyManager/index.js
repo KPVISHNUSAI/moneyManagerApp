@@ -1,5 +1,7 @@
 import {Component} from 'react'
 
+import {v4} from 'uuid'
+
 import './index.css'
 
 import TransactionItem from '../TransactionItem'
@@ -25,6 +27,91 @@ class MoneyManager extends Component {
     title: '',
     amount: '',
     type: '',
+
+    transactionDetails: {
+      balance: 0,
+      income: 0,
+      expenses: 0,
+    },
+  }
+
+  handleTitleInput = event => {
+    this.setState({title: event.target.value})
+  }
+
+  handleAmountInput = event => {
+    this.setState({amount: event.target.value})
+  }
+
+  handleType = event => {
+    this.setState({type: event.target.value})
+  }
+
+  addTransaction = event => {
+    event.preventDefault()
+    const {title, amount, type} = this.state
+    const newTransaction = {
+      id: v4(),
+      title,
+      amount: parseFloat(amount),
+      type,
+    }
+
+    this.setState(
+      prevState => ({
+        transactionsList: [...prevState.transactionsList, newTransaction],
+        title: '',
+        amount: '',
+        type: '',
+      }),
+      () => {
+        // After setting state, recalculate transactionDetails
+        const {transactionsList} = this.state
+        const updatedTransactionDetails = {
+          balance: 0,
+          income: 0,
+          expenses: 0,
+        }
+        transactionsList.forEach(transaction => {
+          if (transaction.type === 'INCOME') {
+            updatedTransactionDetails.income += transaction.amount
+          } else if (transaction.type === 'EXPENSES') {
+            updatedTransactionDetails.expenses += transaction.amount
+          }
+        })
+
+        updatedTransactionDetails.balance =
+          updatedTransactionDetails.income - updatedTransactionDetails.expenses
+        this.setState({transactionDetails: updatedTransactionDetails})
+      },
+    )
+  }
+
+  deleteTransaction = transactionId => {
+    this.setState(prevState => {
+      const updatedTransactions = prevState.transactionsList.filter(
+        eachTransaction => eachTransaction.id !== transactionId,
+      )
+
+      // Recalculate transactionDetails based on updatedTransactions
+      const updatedTransactionDetails = updatedTransactions.reduce(
+        (acc, transaction) => {
+          if (transaction.type === 'INCOME') {
+            acc.income += transaction.amount
+          } else if (transaction.type === 'EXPENSES') {
+            acc.expenses += transaction.amount
+          }
+          acc.balance = acc.income - acc.expenses
+          return acc
+        },
+        {balance: 0, income: 0, expenses: 0},
+      )
+
+      return {
+        transactionsList: updatedTransactions,
+        transactionDetails: updatedTransactionDetails, // Update transactionDetails
+      }
+    })
   }
 
   renderTransactionItems = () => {
@@ -35,13 +122,14 @@ class MoneyManager extends Component {
         titleName={eachTransaction.title}
         amountRs={eachTransaction.amount}
         typeOfTransaction={eachTransaction.type}
+        deleteTransaction={this.deleteTransaction}
+        transactionId={eachTransaction.id}
       />
     ))
   }
 
   render() {
-    const {transactionsList, title, amount, type} = this.state
-    const transactionDetails = {balance: 0, income: 0, expenses: 0}
+    const {title, amount, type, transactionDetails} = this.state
     return (
       <div className="home-container">
         <div className="user-container">
@@ -53,7 +141,7 @@ class MoneyManager extends Component {
         </div>
         <MoneyDetails transactionDetails={transactionDetails} />
         <div className="form-history-container">
-          <form onSubmit={this.processTransaction} className="form-container">
+          <form onSubmit={this.addTransaction} className="form-container">
             <h1>Add Transaction</h1>
             <label htmlFor="titleId">TITLE</label>
             <input
@@ -74,18 +162,23 @@ class MoneyManager extends Component {
               placeholder="AMOUNT"
             />
             <label htmlFor="typeId">TYPE</label>
-            <select id="typeId" value={type} className="inputs-sty">
+            <select
+              name="selector"
+              value={type}
+              className="inputs-sty"
+              onChange={this.handleType}
+            >
               <option
-                className="inputs-sty"
-                value="income"
-                id={transactionTypeOptions[0].optionId}
+                // key={transactionTypeOptions[0].optionId} // Use key for React
+                value={transactionTypeOptions[0].optionId}
+                className="input-sty"
               >
                 {transactionTypeOptions[0].displayText}
               </option>
               <option
-                className="inputs-sty"
-                value="expenses"
-                id={transactionTypeOptions[1].optionId}
+                // key={transactionTypeOptions[1].optionId} // Use key for React
+                value={transactionTypeOptions[1].optionId}
+                className="input-sty"
               >
                 {transactionTypeOptions[1].displayText}
               </option>
@@ -102,27 +195,10 @@ class MoneyManager extends Component {
                   <th>Title</th>
                   <th>Amount</th>
                   <th>Type</th>
-                  <th>.</th>
+                  <th> </th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Expense 1</td>
-                  <td>100</td>
-                  <td>Expense</td>
-                  <td>
-                    <button className="delete-button">Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Income 1</td>
-                  <td>200</td>
-                  <td>Income</td>
-                  <td>
-                    <button className="delete-button">Delete</button>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody>{this.renderTransactionItems()}</tbody>
             </table>
           </div>
         </div>

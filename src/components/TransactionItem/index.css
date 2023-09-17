@@ -1,1 +1,11 @@
 /* Write your CSS here */
+.delete-btn {
+  background-color: transparent;
+  border-color: transparent;
+  height: 100%;
+}
+
+.delete-icon {
+  height: 30px;
+  width: 30px;
+}
