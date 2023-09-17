@@ -26,7 +26,7 @@ class MoneyManager extends Component {
     transactionsList: [],
     title: '',
     amount: '',
-    type: '',
+    type: 'Income',
 
     transactionDetails: {
       balance: 0,
@@ -73,9 +73,9 @@ class MoneyManager extends Component {
           expenses: 0,
         }
         transactionsList.forEach(transaction => {
-          if (transaction.type === 'INCOME') {
+          if (transaction.type === 'Income') {
             updatedTransactionDetails.income += transaction.amount
-          } else if (transaction.type === 'EXPENSES') {
+          } else if (transaction.type === 'Expenses') {
             updatedTransactionDetails.expenses += transaction.amount
           }
         })
@@ -96,9 +96,9 @@ class MoneyManager extends Component {
       // Recalculate transactionDetails based on updatedTransactions
       const updatedTransactionDetails = updatedTransactions.reduce(
         (acc, transaction) => {
-          if (transaction.type === 'INCOME') {
+          if (transaction.type === 'Income') {
             acc.income += transaction.amount
-          } else if (transaction.type === 'EXPENSES') {
+          } else if (transaction.type === 'Expenses') {
             acc.expenses += transaction.amount
           }
           acc.balance = acc.income - acc.expenses
@@ -169,15 +169,15 @@ class MoneyManager extends Component {
               onChange={this.handleType}
             >
               <option
-                // key={transactionTypeOptions[0].optionId} // Use key for React
-                value={transactionTypeOptions[0].optionId}
+                key={transactionTypeOptions[0].optionId} // Use key for React
+                value={transactionTypeOptions[0].displayText}
                 className="input-sty"
               >
                 {transactionTypeOptions[0].displayText}
               </option>
               <option
-                // key={transactionTypeOptions[1].optionId} // Use key for React
-                value={transactionTypeOptions[1].optionId}
+                key={transactionTypeOptions[1].optionId} // Use key for React
+                value={transactionTypeOptions[1].displayText}
                 className="input-sty"
               >
                 {transactionTypeOptions[1].displayText}
@@ -189,17 +189,16 @@ class MoneyManager extends Component {
           </form>
           <div className="history-container">
             <h1>History</h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th> </th>
-                </tr>
-              </thead>
-              <tbody>{this.renderTransactionItems()}</tbody>
-            </table>
+
+            <ul className="list-container">
+              <li className="headers">
+                <p className="headers-sty">Title</p>
+                <p className="headers-sty">Amount</p>
+                <p className="headers-sty">Type</p>
+                <p className="headers-sty"> </p>
+              </li>
+              {this.renderTransactionItems()}
+            </ul>
           </div>
         </div>
       </div>

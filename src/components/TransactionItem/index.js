@@ -13,21 +13,19 @@ const TransactionItem = props => {
   }
 
   return (
-    <tr>
-      <td>{titleName}</td>
-      <td>{amountRs}</td>
-      <td>{typeOfTransaction}</td>
-      <td>
-        <button className="delete-btn" type="button" onClick={deleteRow}>
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/money-manager/delete.png"
-            alt="delete"
-            className="delete-icon"
-            data-testId="delete"
-          />
-        </button>
-      </td>
-    </tr>
+    <li className="headers-li">
+      <p className="row-sty">{titleName}</p>
+      <p className="row-sty">{amountRs}</p>
+      <p className="row-sty">{typeOfTransaction}</p>
+      <button className="delete-btn" type="button" onClick={deleteRow}>
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/money-manager/delete.png"
+          alt="delete"
+          className="delete-icon"
+          data-testid="delete"
+        />
+      </button>
+    </li>
   )
 }
 export default TransactionItem
