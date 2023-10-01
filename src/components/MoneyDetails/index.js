@@ -2,47 +2,47 @@
 import './index.css'
 
 const MoneyDetails = props => {
-  const {transactionDetails} = props
-  const {balance, income, expenses} = transactionDetails
+  const {balanceAmount, incomeAmount, expensesAmount} = props
+
   return (
     <div className="money-details-container">
-      <div className="money-container balance-container">
+      <div className="balance-container">
         <img
-          alt="balance"
           src="https://assets.ccbp.in/frontend/react-js/money-manager/balance-image.png"
-          className="logo-img"
+          alt="balance"
+          className="details-img"
         />
-        <div className="numeric-container">
-          <p className="text-sty">Your Balance</p>
-          <h1 className="text-sty" data-testid="balanceAmount">
-            Rs {balance}
-          </h1>
+        <div>
+          <p className="details-text">Your Balance</p>
+          <p className="details-money" data-testid="balanceAmount">
+            Rs {balanceAmount}
+          </p>
         </div>
       </div>
-      <div className="money-container income-container">
+      <div className="income-container">
         <img
-          alt="income"
           src="https://assets.ccbp.in/frontend/react-js/money-manager/income-image.png"
-          className="logo-img"
+          alt="income"
+          className="details-img"
         />
-        <div className="numeric-container">
-          <p className="text-sty">Your Income</p>
-          <h1 className="text-sty" data-testid="incomeAmount">
-            Rs {income}
-          </h1>
+        <div>
+          <p className="details-text">Your Income</p>
+          <p className="details-money" data-testid="incomeAmount">
+            Rs {incomeAmount}
+          </p>
         </div>
       </div>
-      <div className="money-container expenses-container">
+      <div className="expenses-container">
         <img
-          alt="expenses"
           src="https://assets.ccbp.in/frontend/react-js/money-manager/expenses-image.png"
-          className="logo-img"
+          alt="expenses"
+          className="details-img"
         />
-        <div className="numeric-container">
-          <p className="text-sty">Your Expenses</p>
-          <h1 className="text-sty" data-testid="expensesAmount">
-            Rs {expenses}
-          </h1>
+        <div>
+          <p className="details-text">Your Expenses</p>
+          <p className="details-money" data-testid="expensesAmount">
+            Rs {expensesAmount}
+          </p>
         </div>
       </div>
     </div>
